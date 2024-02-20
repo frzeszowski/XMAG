@@ -29,50 +29,57 @@ namespace XMAG
         {
             textBoxProductName = new TextBox();
             textBoxQuantity = new TextBox();
-            buttonAdd = new Button();
+            textBoxUwagi = new TextBox();
             buttonSave = new Button();
             buttonCancel = new Button();
             Label labelName = new Label(); // Add label for product name
             Label labelQuantity = new Label(); // Add label for quantity
+            Label labelUwagi = new Label();
 
             SuspendLayout();
 
+            // Add textBoxProductName
+            textBoxProductName.Location = new Point(120, 20);
+            textBoxProductName.Size = new Size(150, 20);
+            Controls.Add(textBoxProductName);
             // Add label for product name
             labelName.Text = "Nazwa:";
-            labelName.Location = new System.Drawing.Point(50, 20);
-            labelName.Size = new System.Drawing.Size(50, 20);
+            labelName.Location = new Point(50, 20);
+            labelName.Size = new Size(50, 20);
             Controls.Add(labelName);
 
-            // Add textBoxProductName
-            textBoxProductName.Location = new System.Drawing.Point(120, 20);
-            textBoxProductName.Size = new System.Drawing.Size(150, 20);
-            Controls.Add(textBoxProductName);
-
-
+            // Add textBoxQuantity
+            textBoxQuantity.Location = new Point(120, 60);
+            textBoxQuantity.Size = new Size(150, 20);
+            Controls.Add(textBoxQuantity);
             // Add label for quantity
             labelQuantity.Text = "Ilość:";
-            labelQuantity.Location = new System.Drawing.Point(50, 60);
-            labelQuantity.Size = new System.Drawing.Size(50, 20);
+            labelQuantity.Location = new Point(50, 60);
+            labelQuantity.Size = new Size(50, 20);
             Controls.Add(labelQuantity);
-
-            // Add textBoxQuantity
-            textBoxQuantity.Location = new System.Drawing.Point(120, 60);
-            textBoxQuantity.Size = new System.Drawing.Size(150, 20);
-            Controls.Add(textBoxQuantity);
-
-            // Add buttonCancel
-            buttonCancel.Location = new System.Drawing.Point(150, 100);
-            buttonCancel.Size = new System.Drawing.Size(75, 23);
-            buttonCancel.Text = "Anuluj";
-            buttonCancel.Click += new EventHandler(buttonCancel_Click);
-            Controls.Add(buttonCancel);
+            // Add textBoxUwagi
+            textBoxUwagi.Location = new Point(120, 100);
+            textBoxUwagi.Size = new Size(150, 20);
+            Controls.Add(textBoxUwagi);
+            // Add label for uwagi
+            labelUwagi.Text = "Uwagi:";
+            labelUwagi.Location = new Point(50, 100);
+            labelUwagi.Size = new Size(50, 20);
+            Controls.Add(labelUwagi);
 
             // Add buttonSave
-            buttonSave.Location = new System.Drawing.Point(50, 100);
-            buttonSave.Size = new System.Drawing.Size(75, 23);
+            buttonSave.Location = new Point(50, 150);
+            buttonSave.Size = new Size(75, 23);
             buttonSave.Text = "Zapisz";
             buttonSave.Click += new EventHandler(buttonSave_Click);
             Controls.Add(buttonSave);
+
+            // Add buttonCancel
+            buttonCancel.Location = new Point(150, 150);
+            buttonCancel.Size = new Size(75, 23);
+            buttonCancel.Text = "Anuluj";
+            buttonCancel.Click += new EventHandler(buttonCancel_Click);
+            Controls.Add(buttonCancel);
 
             ResumeLayout(false);
         }

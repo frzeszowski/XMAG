@@ -1,96 +1,154 @@
+using System;
+using System.Drawing;
+using System.Windows.Forms;
+
 namespace XMAG
 {
     public partial class MainForm : Form
     {
         private TabPage tabPageProducts;
+        private TabPage tabPageParts;
         private TabControl tabControl;
         private DataGridView dataGridViewProducts;
-        private Button buttonAddProduct;
-        private Button buttonDeleteProduct;
-        private Button buttonEditProduct;
+        private DataGridView dataGridViewParts;
+        private Button buttonAddProduct = new Button();
+        private Button buttonEditProduct = new Button();
+        private Button buttonDeleteProduct = new Button();
 
         public MainForm()
         {
             CheckForUpdates();
             ProductManagement.InitializeDatabase();
             InitializeComponent();
-            InitializeTabs();
-            this.Resize += MainForm_Resize;
-        }
-
-        // Method to handle the Resize event
-        private void MainForm_Resize(object sender, EventArgs e)
-        {
-            // Adjust the position of the buttons based on the form size
-            AdjustControlSizes();
-        }
-
-        private void AdjustControlSizes()
-        {
-            if (tabControl.SelectedTab == tabPageProducts)
-            {
-                // Adjust DataGridView size and position
-                dataGridViewProducts.Location = new Point(this.Width / 5, this.Height / 3);
-                dataGridViewProducts.Size = new Size(this.Width - this.Width / 5, this.Height - this.Height / 3 - this.Height / 10);
-
-                // Adjust button positions
-                int buttonWidth = 100;
-                int buttonHeight = 30;
-                int buttonSpacing = 10;
-
-                // Anchor buttons to the bottom-right corner of the DataGridView
-                buttonAddProduct.Location = new Point(dataGridViewProducts.Right - buttonWidth - buttonSpacing, dataGridViewProducts.Bottom + buttonSpacing);
-                buttonAddProduct.Size = new Size(buttonWidth, buttonHeight);
-
-                buttonEditProduct.Location = new Point(buttonAddProduct.Left - buttonWidth - buttonSpacing, dataGridViewProducts.Bottom + buttonSpacing);
-                buttonEditProduct.Size = new Size(buttonWidth, buttonHeight);
-
-                buttonDeleteProduct.Location = new Point(buttonEditProduct.Left - buttonWidth - buttonSpacing, dataGridViewProducts.Bottom + buttonSpacing);
-                buttonDeleteProduct.Size = new Size(buttonWidth, buttonHeight);
-            }
         }
 
         private void InitializeComponent()
         {
+            //button properties
+            int buttonWidth = 100;
+            int buttonHeight = 30;
+            int buttonSpacing = 10;
+            int buttonBottomSpacing = 20;
+            int buttonYCoordinate = this.Height - buttonBottomSpacing - buttonHeight;
+            // Initialize TabControl
             this.tabControl = new TabControl();
-            this.tabPageProducts = new TabPage();
+            this.tabControl.Dock = DockStyle.Top;
+            this.tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
+            this.tabControl.Width = this.Width - 30; // Adjust width to fill the form
+            this.tabControl.Height = 350;
+            this.tabControl.Location = new Point(10, 10); // Adjust location
+            this.Controls.Add(this.tabControl);
 
-            // DataGridView configuration
-            this.dataGridViewProducts = new DataGridView();
-            this.dataGridViewProducts.Dock = DockStyle.Fill;
-            this.tabPageProducts.Controls.Add(dataGridViewProducts);
+            // Initialize tab pages
+            tabPageProducts = new TabPage("Products");
+            tabPageParts = new TabPage("Parts");
 
-            // Add tabPageProducts to tabControl
-            this.tabControl.TabPages.Add(tabPageProducts);
+            // Add tab pages to tab control
+            this.tabControl.TabPages.AddRange(new TabPage[] { tabPageProducts, tabPageParts });
 
-            // Add tabControl to MainForm
-            this.Controls.Add(tabControl);
+            // Initialize DataGridView for Products
+            dataGridViewProducts = new DataGridView();
+            dataGridViewProducts.Dock = DockStyle.Fill;
+            tabPageProducts.Controls.Add(dataGridViewProducts); // Add to the "Products" tab page
 
-            // Initialize buttons
+            // Create a panel for the buttons
+            Panel buttonPanelProducts = new Panel();
+            buttonPanelProducts.Dock = DockStyle.Bottom;
+            buttonPanelProducts.Height = 100; // Adjust height as needed
+            tabPageProducts.Controls.Add(buttonPanelProducts);
+
+            // Initialize buttons for Products tab
             buttonAddProduct = new Button();
-            buttonAddProduct.Text = "Dodaj produkt";
+            buttonAddProduct.Text = "Add Product";
+            buttonAddProduct.Size = new Size(buttonWidth, buttonHeight);
+            buttonAddProduct.Location = new Point(20, buttonPanelProducts.Height - buttonHeight - 10); // Adjust as needed
+            buttonAddProduct.Click += buttonAddProduct_Click;
+            buttonPanelProducts.Controls.Add(buttonAddProduct);
 
             buttonEditProduct = new Button();
-            buttonEditProduct.Text = "Edytuj produkt";
+            buttonEditProduct.Text = "Edit Product";
+            buttonEditProduct.Size = new Size(buttonWidth, buttonHeight);
+            buttonEditProduct.Location = new Point(buttonAddProduct.Right + buttonSpacing, buttonPanelProducts.Height - buttonHeight - 10);
+            buttonEditProduct.Click += buttonEditProduct_Click;
+            buttonPanelProducts.Controls.Add(buttonEditProduct);
 
             buttonDeleteProduct = new Button();
-            buttonDeleteProduct.Text = "Usuñ produkt";
+            buttonDeleteProduct.Text = "Delete Product";
+            buttonDeleteProduct.Size = new Size(buttonWidth, buttonHeight);
+            buttonDeleteProduct.Location = new Point(buttonEditProduct.Right + buttonSpacing, buttonPanelProducts.Height - buttonHeight - 10);
+            buttonDeleteProduct.Click += buttonDeleteProduct_Click;
+            buttonPanelProducts.Controls.Add(buttonDeleteProduct);
+
+            // Initialize DataGridView for Parts
+            dataGridViewParts = new DataGridView();
+            dataGridViewParts.Dock = DockStyle.Fill;
+            tabPageParts.Controls.Add(dataGridViewParts); // Add to the "Parts" tab page
+
+            // Create a panel for the buttons
+            Panel buttonPanelParts = new Panel();
+            buttonPanelParts.Dock = DockStyle.Bottom;
+            buttonPanelParts.Height = 100; // Adjust height as needed
+            tabPageParts.Controls.Add(buttonPanelParts);
+
+            // Initialize buttons for Parts tab
+            Button buttonAddPart = new Button();
+            buttonAddPart.Text = "Add Part";
+            buttonAddPart.Location = new Point(20, buttonPanelParts.Height - buttonHeight - 10);
+            buttonAddPart.Size = new Size(buttonWidth, buttonHeight);
+            buttonPanelParts.Controls.Add(buttonAddPart);
+
+            Button buttonEditPart = new Button();
+            buttonEditPart.Text = "Edit Part";
+            buttonEditPart.Location = new Point(buttonAddPart.Right + 10, buttonPanelParts.Height - buttonHeight - 10);
+            buttonEditPart.Size = new Size(buttonWidth, buttonHeight);
+            buttonPanelParts.Controls.Add(buttonEditPart);
+
+            Button buttonDeletePart = new Button();
+            buttonDeletePart.Text = "Delete Part";
+            buttonDeletePart.Location = new Point(buttonEditPart.Right + 10, buttonPanelParts.Height - buttonHeight - 10);
+            buttonDeletePart.Size = new Size(buttonWidth, buttonHeight);
+            buttonPanelParts.Controls.Add(buttonDeletePart);
+
+            // Hide the button panel initially
+            buttonPanelParts.Visible = false;
+
+            // Handle the SelectedIndexChanged event of the tab control
+            this.tabControl.SelectedIndexChanged += (sender, e) =>
+            {
+                if (tabControl.SelectedTab == tabPageProducts)
+                {
+                    buttonPanelProducts.Visible = true;
+                    buttonPanelParts.Visible = false;
+                }
+                else if (tabControl.SelectedTab == tabPageParts)
+                {
+                    buttonPanelProducts.Visible = false;
+                    buttonPanelParts.Visible = true;
+                }
+                else 
+                {
+                    buttonPanelProducts.Visible = false;
+                    buttonPanelParts.Visible = false;
+                }
+            };
 
             // Refresh the product list
             RefreshProductList();
         }
 
-        private void InitializeTabs()
+        private void TabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Attach button click events
-            buttonAddProduct.Click += buttonAddProduct_Click;
-            buttonEditProduct.Click += buttonEditProduct_Click;
-            buttonDeleteProduct.Click += buttonDeleteProduct_Click;
+            UpdateTabAppearance();
+        }
 
-            // Add buttons to MainForm
-            this.Controls.Add(buttonAddProduct);
-            this.Controls.Add(buttonEditProduct);
-            this.Controls.Add(buttonDeleteProduct);
+        private void UpdateTabAppearance()
+        {
+            // Loop through all tab pages and set their appearance
+            foreach (TabPage tabPage in tabControl.TabPages)
+            {
+                // Set the font style of the tab based on whether it's selected or not
+                tabPage.Font = (tabPage == tabControl.SelectedTab) ? new Font(tabPage.Font, FontStyle.Bold) : new Font(tabPage.Font, FontStyle.Regular);
+            }
         }
 
         private void RefreshProductList()
@@ -100,8 +158,20 @@ namespace XMAG
                 // Retrieve product data from the warehouse
                 var products = ProductManagement.PokazProdukty();
 
-                // Bind the product data to the DataGridView
-                dataGridViewProducts.DataSource = products;
+                if (products != null)
+                {
+                    if (dataGridViewProducts != null)
+                    {
+                        dataGridViewProducts.DataSource = products;
+                    }
+                    else
+                    {
+                        dataGridViewProducts = new DataGridView();
+                        dataGridViewProducts.Dock = DockStyle.Fill;
+                        tabPageProducts.Controls.Add(dataGridViewProducts);
+                        dataGridViewProducts.DataSource = products;
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -114,36 +184,7 @@ namespace XMAG
             using (AddProductDialog addProductForm = new AddProductDialog())
             {
                 DialogResult result = addProductForm.ShowDialog();
-
-                if (result == DialogResult.OK)
-                {
-                    string productName = addProductForm.textBoxProductName.Text.Trim();
-                    string quantityText = addProductForm.textBoxQuantity.Text.Trim();
-                    string uwagi = addProductForm.textBoxUwagi.Text.Trim();
-
-                    if (string.IsNullOrEmpty(productName) || string.IsNullOrEmpty(quantityText))
-                    {
-                        MessageBox.Show("Please enter both name and quantity.", "Missing Information", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return;
-                    }
-
-                    if (!int.TryParse(quantityText, out int quantity) || quantity <= 0)
-                    {
-                        MessageBox.Show("Please enter a valid quantity as a number.", "Invalid Quantity", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return;
-                    }
-
-                    try
-                    {
-                        ProductManagement.DodajNowyProdukt(productName, quantity, uwagi);
-                        MessageBox.Show("Product added successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        RefreshProductList();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
+                RefreshProductList();
             }
         }
 
